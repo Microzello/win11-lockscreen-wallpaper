@@ -1,0 +1,22 @@
+# Build output
+bin/
+obj/
+publish/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.user
+*.suo
+
+# Code-signing artifacts -- generated locally by signing/create-certificate.ps1.
+# The private key never leaves the Windows certificate store (it isn't a file
+# at all), but the exported public certificate is machine-specific: it's only
+# useful paired with the private key on the machine that created it, so there's
+# no reason to commit someone else's. Every user runs create-certificate.ps1
+# to generate their own.
+signing/*.cer
+signing/*.pfx
+
+# Misc
+*.log
