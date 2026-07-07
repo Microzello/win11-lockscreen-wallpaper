@@ -77,11 +77,24 @@ try {
     exit 1
 }
 
+Write-Host "Creating a Start Menu shortcut..."
+# So there's always an easy way to relaunch the app (Start menu search) even
+# if the tray icon is ever lost for some reason, without having to remember
+# or hunt down the Program Files path.
+$startMenuDir = Join-Path $env:ProgramData 'Microsoft\Windows\Start Menu\Programs'
+$shortcutPath = Join-Path $startMenuDir 'LockScreenWallpaper.lnk'
+$wshShell = New-Object -ComObject WScript.Shell
+$shortcut = $wshShell.CreateShortcut($shortcutPath)
+$shortcut.TargetPath = Join-Path $installDir 'LockScreenWallpaper.exe'
+$shortcut.WorkingDirectory = $installDir
+$shortcut.Description = 'Lock Screen Wallpaper (multi-monitor)'
+$shortcut.Save()
+
 Write-Host ""
 Write-Host "Done. Verifying signature trust from the installed copy:"
 Get-AuthenticodeSignature -FilePath (Join-Path $installDir 'LockScreenWallpaper.exe') | Format-List Status, StatusMessage
 
-Write-Host "Launch it from: $installDir\LockScreenWallpaper.exe"
+Write-Host "Launch it from the Start Menu (search ""LockScreenWallpaper"") or: $installDir\LockScreenWallpaper.exe"
 
 # Explicit success exit: an earlier native command (taskkill, via cmd /c) can
 # leave a non-zero value sitting in $LASTEXITCODE, which callers checking our

@@ -51,6 +51,12 @@ if (Test-Path $InstallDir) {
     Write-Host "$InstallDir not found; nothing to remove."
 }
 
+$shortcutPath = Join-Path $env:ProgramData 'Microsoft\Windows\Start Menu\Programs\LockScreenWallpaper.lnk'
+if (Test-Path $shortcutPath) {
+    Write-Host "Removing Start Menu shortcut..."
+    Remove-Item -Path $shortcutPath -Force
+}
+
 foreach ($storePath in 'Cert:\LocalMachine\Root', 'Cert:\LocalMachine\TrustedPublisher', 'Cert:\CurrentUser\My') {
     Get-ChildItem $storePath -ErrorAction SilentlyContinue |
         Where-Object { $_.Subject -eq $Subject } |

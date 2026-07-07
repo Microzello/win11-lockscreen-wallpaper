@@ -21,7 +21,8 @@ Open the `win11-lockscreen-wallpaper` folder in File Explorer and
 **double-click `install.cmd`**. It builds and signs the app, then shows one
 standard User Account Control prompt to install it: click **Yes**. It then
 launches the app for you; it has no main window, look for its icon in the
-system tray.
+system tray. It also adds a Start Menu shortcut, so you can relaunch it any
+time by searching "LockScreenWallpaper" without hunting for the install path.
 
 Requires Windows 10/11 and the [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 (there's no prebuilt release; see [Why signing is required](#why-signing-is-required) for why).

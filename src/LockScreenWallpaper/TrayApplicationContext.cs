@@ -12,9 +12,6 @@ internal sealed class TrayApplicationContext : ApplicationContext
     private const string RunKeyPath = @"Software\Microsoft\Windows\CurrentVersion\Run";
     private const string RunValueName = "LockScreenWallpaper";
 
-    private static readonly string LogPath = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "LockScreenWallpaper", "events.log");
-
     private readonly Stopwatch _sinceLastEvent = Stopwatch.StartNew();
     private readonly NotifyIcon _trayIcon;
     private readonly OverlayManager _overlayManager = new();
@@ -149,48 +146,35 @@ internal sealed class TrayApplicationContext : ApplicationContext
     {
         var elapsedMs = _sinceLastEvent.ElapsedMilliseconds;
         _sinceLastEvent.Restart();
-        LogEvent($"{e.Reason} (+{elapsedMs} ms since previous event)");
+        Log.Write($"{e.Reason} (+{elapsedMs} ms since previous event)");
 
         switch (e.Reason)
         {
             case SessionSwitchReason.SessionLock:
                 _settings = AppSettings.Load();
                 _overlayManager.ShowAll(_settings);
-                LogEvent("  overlay shown");
+                Log.Write("  overlay shown");
                 break;
             case SessionSwitchReason.SessionUnlock:
                 _overlayManager.HideAll();
-                LogEvent("  overlay hidden");
+                Log.Write("  overlay hidden");
                 break;
-        }
-    }
-
-    private static void LogEvent(string message)
-    {
-        try
-        {
-            Directory.CreateDirectory(Path.GetDirectoryName(LogPath)!);
-            File.AppendAllText(LogPath, $"{DateTime.Now:HH:mm:ss.fff}  {message}{Environment.NewLine}");
-        }
-        catch
-        {
-            // Logging must never take the app down.
         }
     }
 
     private static void OpenEventLog()
     {
-        if (!File.Exists(LogPath))
+        if (!File.Exists(Log.FilePath))
         {
             MessageBox.Show(
-                "No lock/unlock events have been logged yet. Lock the workstation (Win+L) at least once first.",
+                "No events have been logged yet. Lock the workstation (Win+L) at least once first.",
                 "Lock Screen Wallpaper",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
             return;
         }
 
-        Process.Start(new ProcessStartInfo(LogPath) { UseShellExecute = true });
+        Process.Start(new ProcessStartInfo(Log.FilePath) { UseShellExecute = true });
     }
 
     private static bool IsStartupEnabled()
