@@ -11,6 +11,9 @@ your workstation and paints your own wallpaper over the black secondary
 monitors, using the same signed-overlay-window technique as
 [VoidVolker/LockScreen](https://github.com/VoidVolker/LockScreen).
 
+<img width="228" height="178" alt="image" src="https://github.com/user-attachments/assets/18679ede-af2e-482b-b522-dcfcdb5cd819" />
+
+
 ## Install
 
 ```powershell
